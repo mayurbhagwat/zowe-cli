@@ -17,6 +17,7 @@ import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
 import * as path from "path";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
+import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 
 export class Utilities {
     public static async chtag(session: AbstractSession, ussFileName: string, type: Tag, codeset?: string): Promise<IZosFilesResponse> {
@@ -42,5 +43,65 @@ export class Utilities {
             success: true,
             commandResponse: "File tagged successfully."
         };
+    }
+
+
+    /**
+     * Retrieve various details from USS file functions
+     *
+     * This function uses a JSON payload to retrieve information via zosmf utilities function
+     *
+     * @param {AbstractSession} session     - z/OSMF connection info
+     * @param {string}          USSFileName - contains the file name
+     * @param {JSON}            payload     - contains the options to be sent
+     *
+     * @returns {Promise<Buffer>} Promise that resolves to json information
+     *
+     * @throws {ImperativeError}
+     */
+    public static async putUSSPayload(session: AbstractSession, USSFileName: string, payload: any): Promise<Buffer> {
+        ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(payload, ZosFilesMessages.missingPayload.message);
+        ImperativeExpect.toNotBeEqual(payload, {}, ZosFilesMessages.missingPayload.message);
+        USSFileName = path.posix.normalize(USSFileName);
+        // Get a proper destination for the file to be downloaded
+        // If the "file" is not provided, we create a folder structure similar to the uss file structure
+        if (USSFileName.substr(0, 1) === "/") {
+            USSFileName = USSFileName.substr(1);
+        }
+
+        USSFileName = encodeURIComponent(USSFileName);
+        const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
+
+        const reqHeaders: IHeaderContent[] = [];
+
+        const response: any = ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
+
+        return response;
+    }
+
+    /**
+     * Based upon the files chtag value. Identify how the tagging should be interpretted when transferring the contents
+     * For example an EBCDIC file would always be converted from it's EBCDIC value to the ASCII
+     *
+     * An ASCII file value or binary should not be converted.
+     *
+     * The default value if the tag is not set or in an invalid state correctly is to convert.
+     *
+     * @param {AbstractSession}  session      - z/OSMF connection info
+     * @param {string}           USSFileName  - contains the file name
+     *
+     * @returns {Promise<boolean>} Promise that resolves to true if the file is binary or ASCII text or false if file
+     * should likely be converted to text. Default is false which aligns with the zosmf default behavior converting
+     *
+     * @throws {ImperativeError}
+     */
+    public static async isFileTagBinOrAscii(session: AbstractSession, USSFileName: string): Promise<boolean> {
+        const payload = {request:"chtag", action:"list"};
+        const content = await Utilities.putUSSPayload(session, USSFileName, payload);
+        const result = JSON.stringify(content);
+        return (result.indexOf("b ") >-1) ||     // Tests if binary tag set
+            (result.indexOf("UTF-") >-1 ) || (result.indexOf("ISO8859-")>-1 ) || (result.indexOf("IBM-850") >-1 );
     }
 }

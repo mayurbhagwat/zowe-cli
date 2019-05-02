@@ -23,10 +23,8 @@ import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
 import { IDownloadOptions } from "./doc/IDownloadOptions";
-import { Get } from "../get/Get";
 import { asyncPool } from "../../../../../utils";
-import { IGetOptions } from "../get";
-import { Writable } from "stream";
+import { Utilities } from "../Utilities";
 
 
 /**
@@ -243,7 +241,12 @@ export class Download {
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
             let reqHeaders: IHeaderContent[] = [];
-            if (options.binary) {
+            if (options === {}) {
+                const isFileTagBinOrAscii = await Utilities.isFileTagBinOrAscii(session, ussFileName);
+                if (isFileTagBinOrAscii) {
+                    reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+                }
+            } else if (options.binary === true) {
                 reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
             }
 

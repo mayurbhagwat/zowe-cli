@@ -17,7 +17,7 @@ import { IHeaderContent } from "../../../../../rest/src/doc/IHeaderContent";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient } from "../../../../../rest";
 import { IGetOptions } from "./doc/IGetOptions";
-import { Writable } from "stream";
+import { Utilities } from "../Utilities";
 
 
 /**
@@ -83,7 +83,12 @@ export class Get {
         const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
 
         let reqHeaders: IHeaderContent[] = [];
-        if (options.binary) {
+        if (options === {}) {
+            const isFileTagBinOrAscii = await Utilities.isFileTagBinOrAscii(session, USSFileName);
+            if (isFileTagBinOrAscii) {
+                reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
+            }
+        } else if (options.binary === true) {
             reqHeaders = [ZosmfHeaders.X_IBM_BINARY];
         }
 
