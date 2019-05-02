@@ -70,14 +70,11 @@ export class Utilities {
         if (USSFileName.substr(0, 1) === "/") {
             USSFileName = USSFileName.substr(1);
         }
-
         USSFileName = encodeURIComponent(USSFileName);
+
         const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
-
-        const reqHeaders: IHeaderContent[] = [];
-
-        const response: any = ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
-
+        const reqHeaders: IHeaderContent[] = [Headers.APPLICATION_JSON, { [Headers.CONTENT_LENGTH] : JSON.stringify(payload).length.toString() }];
+        const response: any = await ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
         return response;
     }
 
@@ -99,9 +96,13 @@ export class Utilities {
      */
     public static async isFileTagBinOrAscii(session: AbstractSession, USSFileName: string): Promise<boolean> {
         const payload = {request:"chtag", action:"list"};
-        const content = await Utilities.putUSSPayload(session, USSFileName, payload);
-        const result = JSON.stringify(content);
-        return (result.indexOf("b ") >-1) ||     // Tests if binary tag set
-            (result.indexOf("UTF-") >-1 ) || (result.indexOf("ISO8859-")>-1 ) || (result.indexOf("IBM-850") >-1 );
+        const response = await Utilities.putUSSPayload(session, USSFileName, payload);
+        const jsonObj = JSON.parse(response.toString());
+        if (jsonObj.hasOwnProperty("stdout")) {
+        const stdout = JSON.parse(response.toString()).stdout[0];
+            return (stdout.indexOf("b ") >-1) ||     // Tests if binary tag set
+                (stdout.indexOf("UTF-") >-1 ) || (stdout.indexOf("ISO8859-")>-1 ) || (stdout.indexOf("IBM-850") >-1 );
+        } 
+        return false;
     }
 }

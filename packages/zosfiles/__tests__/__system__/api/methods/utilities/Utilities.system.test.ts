@@ -18,17 +18,17 @@ import { getUniqueDatasetName, getTag } from "../../../../../../../__tests__/__s
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment;
 
-describe("USS Utllites", () => {
+describe("USS Utilities", () => {
 
     const localfile = "./packages/zosfiles/__tests__/__system__/api/methods/utilities/__data__/tagfile.txt";
     let ussname: string;
     beforeAll(async () => {
+
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_files_utilities"
         });
         const defaultSystem = testEnvironment.systemTestProperties;
-
         let dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
@@ -47,7 +47,7 @@ describe("USS Utllites", () => {
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("b binary");
 
-        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,localfile);
+        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,ussname);
         expect(isBin).toBe(true);
     });
 
@@ -57,7 +57,7 @@ describe("USS Utllites", () => {
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t ISO8859-1");
 
-        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,localfile);
+        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,ussname);
         expect(isBin).toBe(true);
     });
 
@@ -67,7 +67,7 @@ describe("USS Utllites", () => {
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t IBM-1047");
 
-        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,localfile);
+        const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION,ussname);
         expect(isBin).toBe(false);
     });
 

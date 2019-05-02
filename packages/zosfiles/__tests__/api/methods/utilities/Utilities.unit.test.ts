@@ -108,7 +108,7 @@ describe("Utilities.putUSSPayload", () => {
 
     const payload = {request:"chtag", action:"list"};
     const filename = "/u/myhlq/aFile.txt";
-    const content = {stdout:["m ISO8859-1   T=off /tmp/file"]};
+    const content = new Buffer(JSON.stringify({stdout:["m ISO8859-1   T=off /tmp/file"]}));
 
     describe("putUSSPayload", () => {
         const zosmfExpectSecondSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer");
@@ -199,7 +199,8 @@ describe("Utilities.putUSSPayload", () => {
             expect(response).toEqual(content);
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [], payload);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
         });
     });
     describe("isFileTagBinOrAscii", () => {
@@ -253,12 +254,12 @@ describe("Utilities.putUSSPayload", () => {
             }
 
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substr(1)));
-
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(true);
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [], payload);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
         });
     });
     describe("isFileTagBinOrAscii changing content", () => {
@@ -267,7 +268,7 @@ describe("Utilities.putUSSPayload", () => {
             let response;
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
-            const content1 = {stdout:["m UTF-8   T=off /tmp/file"]};
+            const content1 = new Buffer(JSON.stringify({stdout:["m UTF-8   T=off /tmp/file"]}));
             zosmfExpectSecondSpy.mockImplementation(() => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
@@ -281,13 +282,14 @@ describe("Utilities.putUSSPayload", () => {
             expect(response).toEqual(true);
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [], payload);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
         });
         it("should get a positive indication to binary", async () => {
             let response;
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
-            const content1 = {stdout:["b binary  T=on /tmp/file"]};
+            const content1 = new Buffer(JSON.stringify({stdout:["b binary  T=on /tmp/file"]}));
             zosmfExpectSecondSpy.mockImplementation(() => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
@@ -301,13 +303,14 @@ describe("Utilities.putUSSPayload", () => {
             expect(response).toEqual(true);
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [], payload);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, 
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
         });
         it("should get a negative indication to untagged", async () => {
             let response;
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
-            const content1 = {stdout:["- untagged  T=on /tmp/file"]};
+            const content1 = new Buffer(JSON.stringify({stdout:["- untagged  T=on /tmp/file"]}));
             zosmfExpectSecondSpy.mockImplementation(() => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
@@ -321,13 +324,14 @@ describe("Utilities.putUSSPayload", () => {
             expect(response).toEqual(false);
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [], payload);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
         });
         it("should get a negative indication to empty", async () => {
             let response;
             let caughtError;
             zosmfExpectSecondSpy.mockClear();
-            const content1 = {};
+            const content1 = new Buffer(JSON.stringify({}));
             zosmfExpectSecondSpy.mockImplementation(() => content1);
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);
@@ -341,7 +345,8 @@ describe("Utilities.putUSSPayload", () => {
             expect(response).toEqual(false);
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, [], payload);
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
         });
     });
 });
