@@ -100,9 +100,10 @@ export class Utilities {
         const jsonObj = JSON.parse(response.toString());
         if (jsonObj.hasOwnProperty("stdout")) {
         const stdout = JSON.parse(response.toString()).stdout[0];
-            return (stdout.indexOf("b ") >-1) ||     // Tests if binary tag set
-                (stdout.indexOf("UTF-") >-1 ) || (stdout.indexOf("ISO8859-")>-1 ) || (stdout.indexOf("IBM-850") >-1 );
-        } 
+        // Tests if binary tag set
+        return (stdout.indexOf("b ") >-1) ||
+            (stdout.indexOf("UTF-") >-1 ) || (stdout.indexOf("ISO8859-")>-1 ) || (stdout.indexOf("IBM-850") >-1 );
+        }
         return false;
     }
 }

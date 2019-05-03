@@ -303,7 +303,7 @@ describe("Utilities.putUSSPayload", () => {
             expect(response).toEqual(true);
 
             expect(zosmfExpectSecondSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint, 
+            expect(zosmfExpectSecondSpy).toHaveBeenCalledWith(dummySession, endpoint,
                 [{"Content-Type": "application/json"}, {"Content-Length": "35"}], payload);
         });
         it("should get a negative indication to untagged", async () => {
