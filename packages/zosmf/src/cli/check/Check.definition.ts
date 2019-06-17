@@ -15,8 +15,9 @@ import { StatusDefinition } from "./status/Status.definition";
 export const CheckCommand: ICommandDefinition = {
     name: "check",
     type: "group",
+    summary: "Verify z/OSMF is running and gather diagnostic information about z/OSMF server",
     description: "Confirm that z/OSMF is running on a specified system " +
-        "and gather information about the z/OSMF server for diagnostic purposes. ",
+        "and gather information about the z/OSMF server for diagnostic purposes.",
     children: [
         StatusDefinition
     ]

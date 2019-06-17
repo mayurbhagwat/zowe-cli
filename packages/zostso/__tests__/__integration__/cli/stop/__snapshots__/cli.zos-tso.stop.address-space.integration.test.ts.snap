@@ -130,7 +130,7 @@ exports[`zos-tso stop address-space should display the help 1`] = `
 
    - Start TSO/E address space:
 
-      $ zowe zos-tso start address-space 
+      $ zowe zos-tso start address-space
 
    - Start TSO/E address space, and receive response in JSON
    format:
