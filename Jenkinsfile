@@ -19,7 +19,7 @@ import org.zowe.pipelines.nodejs.models.SemverLevel
  */
 def PRODUCT_NAME = "Zowe CLI"
 
-node('ibm-jenkins-slave-dind') {
+node('ca-jenkins-agent-jack-test') {
     // Initialize the pipeline
     def pipeline = new NodeJSPipeline(this)
 
