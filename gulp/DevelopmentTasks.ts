@@ -203,6 +203,28 @@ const doc: ITaskFunction = async () => {
 };
 doc.description = "Create documentation from the CLI help";
 
+const linkWebHelp: ITaskFunction = async () => {
+    const webHelpSrcDir: string = fs.realpathSync(__dirname + "/../node_modules/@zowe/imperative/web-help/dist");
+    const webHelpDestDir: string = require("os").homedir() + "/.zowe/web-help";
+    const toLink: string[] = ["css", "js"];
+
+    toLink.forEach((path) => {
+        const srcPath: string = `${webHelpSrcDir}/${path}`;
+        const destPath: string = `${webHelpDestDir}/${path}`;
+        const isLinked: boolean = fs.lstatSync(destPath).isSymbolicLink();
+        rimraf(destPath);
+        if (!isLinked) {
+            gutil.log(`Linking ${destPath} to ${srcPath}`);
+            fs.symlinkSync(srcPath, destPath, "dir");
+        } else {
+            gutil.log(`Unlinking ${destPath} from ${srcPath}`);
+            require("fs-extra").copySync(srcPath, destPath);
+        }
+    });
+}
+doc.description = "Toggle linking of web help resources between Imperative source and Zowe user folder";
+
 exports.doc = doc;
 exports.lint = lint;
 exports.license = license;
+exports.linkWebHelp = linkWebHelp;
