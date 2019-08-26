@@ -19,7 +19,7 @@ const developmentTasks = require("./gulp/DevelopmentTasks");
 gulp.task("lint", developmentTasks.lint);
 gulp.task("updateLicense", developmentTasks.license);
 gulp.task('doc', developmentTasks.doc);
-gulp.task("link:webHelp", developmentTasks.linkWebHelp);
+gulp.task("watch:webHelp", developmentTasks.watchWebHelp);
 
 /**
  * Cleanup related tasks

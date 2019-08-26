@@ -20,6 +20,7 @@ import { DefaultHelpGenerator, Imperative, ImperativeConfig } from "@zowe/impera
 const npx = "npx" + (require("os").platform() === "win32" ? ".cmd" : ""); // platform dependent extension for npx command
 
 const childProcess = require("child_process");
+const gulp = require("gulp");
 const gutil = require("gulp-util");
 const rimraf = require("rimraf").sync;
 const fs = require("fs");
@@ -203,28 +204,28 @@ const doc: ITaskFunction = async () => {
 };
 doc.description = "Create documentation from the CLI help";
 
-const linkWebHelp: ITaskFunction = async () => {
-    const webHelpSrcDir: string = fs.realpathSync(__dirname + "/../node_modules/@zowe/imperative/web-help/dist");
-    const webHelpDestDir: string = require("os").homedir() + "/.zowe/web-help";
-    const toLink: string[] = ["css", "js"];
+const watchWebHelp: ITaskFunction = async () => {
+    const srcDir: string = fs.realpathSync(__dirname + "/../node_modules/@zowe/imperative/web-help");
+    const path = require("path");
+    const destDir: string = path.normalize(__dirname + "/../web-help");
 
-    toLink.forEach((path) => {
-        const srcPath: string = `${webHelpSrcDir}/${path}`;
-        const destPath: string = `${webHelpDestDir}/${path}`;
-        const isLinked: boolean = fs.lstatSync(destPath).isSymbolicLink();
-        rimraf(destPath);
-        if (!isLinked) {
-            gutil.log(`Linking ${destPath} to ${srcPath}`);
-            fs.symlinkSync(srcPath, destPath, "dir");
-        } else {
-            gutil.log(`Unlinking ${destPath} from ${srcPath}`);
-            require("fs-extra").copySync(srcPath, destPath);
-        }
+    if (!fs.existsSync(destDir + "/dist")) {
+        gutil.log("Error: You need to run build:webHelp first");
+        return;
+    }
+
+    gulp.watch(srcDir + "/dist/**")
+    .on("change", (srcPath: string, _: any) => {
+        const destPath: string = destDir + "/" + path.relative(srcDir, srcPath);
+        gulp.src(srcPath)
+            .pipe(gulp.dest(path.dirname(destPath)));
+        gutil.log("File copied:", srcPath, "->", destPath);
     });
 }
-doc.description = "Toggle linking of web help resources between Imperative source and Zowe user folder";
+watchWebHelp.description = "Watch for changes to web help files in Imperative and copy them to the web-help/dist folder so you can test the " +
+    "changes. Requires that you have Imperative repo linked and have already run build:webHelp.";
 
 exports.doc = doc;
 exports.lint = lint;
 exports.license = license;
-exports.linkWebHelp = linkWebHelp;
+exports.watchWebHelp = watchWebHelp;

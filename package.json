@@ -64,7 +64,7 @@
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
     "build:webHelp": "ts-node ./web-help/build-web-help.ts",
-    "link:webHelp": "gulp link:webHelp"
+    "watch:webHelp": "gulp watch:webHelp"
   },
   "dependencies": {
     "@zowe/imperative": "^4.3.0-alpha.201908201243",
