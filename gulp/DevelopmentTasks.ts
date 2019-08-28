@@ -205,18 +205,18 @@ const doc: ITaskFunction = async () => {
 doc.description = "Create documentation from the CLI help";
 
 const watchWebHelp: ITaskFunction = async () => {
-    const srcDir: string = fs.realpathSync(__dirname + "/../node_modules/@zowe/imperative/web-help");
     const path = require("path");
-    const destDir: string = path.normalize(__dirname + "/../web-help");
+    const srcDir: string = path.join(path.dirname(require.resolve("@zowe/imperative")), "../web-help");
+    const destDir: string = path.join(__dirname, "../web-help");
 
     if (!fs.existsSync(destDir + "/dist")) {
         gutil.log("Error: You need to run build:webHelp first");
         return;
     }
 
-    gulp.watch(srcDir + "/dist/**")
+    gulp.watch(srcDir.replace(/\\/g, "/") + "/dist/**")
     .on("change", (srcPath: string, _: any) => {
-        const destPath: string = destDir + "/" + path.relative(srcDir, srcPath);
+        const destPath: string = path.join(destDir, path.relative(srcDir, srcPath));
         gulp.src(srcPath)
             .pipe(gulp.dest(path.dirname(destPath)));
         gutil.log("File copied:", srcPath, "->", destPath);
