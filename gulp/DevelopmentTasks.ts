@@ -214,6 +214,8 @@ const watchWebHelp: ITaskFunction = async () => {
         return;
     }
 
+    gutil.log("Watching dependencies for", path.join(destDir, "dist/index.html"));
+
     gulp.watch(srcDir.replace(/\\/g, "/") + "/dist/**")
     .on("change", (srcPath: string, _: any) => {
         const destPath: string = path.join(destDir, path.relative(srcDir, srcPath));
