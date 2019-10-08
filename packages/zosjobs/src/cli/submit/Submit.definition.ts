@@ -18,7 +18,7 @@ export const SubmitDefinition: ICommandDefinition = {
     name: "submit",
     aliases: ["sub"],
     type: "group",
-    summary: "Submit z/OS jobs",
+    summary: "Submit z/OS jobs for testing purpose",
     description: "Submit jobs (JCL) contained in data sets.",
     children: [
         DataSetDefinition,
