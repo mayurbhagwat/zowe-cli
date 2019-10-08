@@ -43,7 +43,7 @@ export * from "../zosjobs/src/api/JobsConstants";
 export * from "../zosjobs/src/api/MonitorJobs";
 export * from "../zosjobs/src/api/SubmitJobs";
 
-export * from "./src/pmautil.defination"
-export * from "./src/cli/get-perf/getperf.defination"
-export * from "./src/cli/get-in-ex/getinex.defination"
-export * from "./src/cli/get-start-stop/getstartstop.defination"
+export * from "./src/pmautil.defination";
+export * from "./src/cli/get-perf/getperf.defination";
+export * from "./src/cli/get-in-ex/getinex.defination";
+export * from "./src/cli/get-start-stop/getstartstop.defination";
