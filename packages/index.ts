@@ -20,4 +20,5 @@ export * from "./zosuss";
 export * from "./zosmf";
 export * from "./provisioning";
 export * from "./workflows";
+export * from "./pma-util";
 
