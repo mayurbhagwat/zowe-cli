@@ -89,7 +89,7 @@ export default class GetperfHandler extends ZosmfBaseHandler {
 
         // pmajob=jobname;
         let Jcl: string =
-            "//PRINTBH  JOB (124400000),'FM SERVER ALLOC',CLASS=A, \n" +
+            "//PMAANAL  JOB (124400000),'PMA ANALYZER',CLASS=A,   \n" +
             "//       MSGCLASS=P,MSGLEVEL=(1,1),NOTIFY=&SYSUID     \n" +
             "//PRINT   EXEC PGM=CAWABATC,REGION=2M                 \n" +
             "//STEPLIB   DD DSN=AD1QA.FMMVS90.CAILIB,              \n" +

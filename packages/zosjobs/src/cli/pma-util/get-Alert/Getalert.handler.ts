@@ -89,22 +89,24 @@ export default class GetalertHandler extends ZosmfBaseHandler {
 
         // pmajob=jobname;
         let Jcl: string =
-            "//PRINTBH  JOB (124400000),'FM SERVER ALLOC',CLASS=A, \n" +
-            "//       MSGCLASS=P,MSGLEVEL=(1,1),NOTIFY=&SYSUID     \n" +
-            "//PRINT   EXEC PGM=CAWABATC,REGION=2M                 \n" +
-            "//STEPLIB   DD DSN=AD1QA.FMMVS90.CAILIB,              \n" +
-            "//             DISP=SHR                               \n" +
-            "//SYSPRINT  DD SYSOUT=*                               \n" +
-            "//SYSLIST   DD SYSOUT=A                               \n" +
-            "//SYSUDUMP  DD SYSOUT=*                               \n" +
-            "//SYSUT1    DD DSN=BHAMA09.QATT.MAT12PMA.KSDSALT,     \n" +
-            "//             DISP=SHR                               \n" +
-            "//SYSIN     DD *                                      \n" +
-            "PRINT,                                                \n" +
-            "INFILE(SYSUT1),                                       \n" +
-            "FORMAT(C),                                            \n" +
-            "LAYOUTFILE(BHAMA09.PMA90.CNTL(KSDSALT)),              \n" +
-            "SELRECIF(2,EQ,C'pmajob')                              \n" +
+            "//PMAALRT  JOB (124400000),'PMA ALERT',CLASS=A,        \n" +
+            "//       MSGCLASS=P,MSGLEVEL=(1,1),NOTIFY=&SYSUID      \n" +
+            "//APCXATAB EXEC PGM=APCXATAB                           \n" +
+            "//STEPLIB  DD DISP=SHR,DSN=APM.QATT.CADEMO.CEETLOAD    \n" +
+            "//APCBALT1 DD DISP=SHR,DSN=APM.QATT.MAT12PMA.KSDSALT   \n" +
+            "//APCTAB   DD SYSOUT=*                                 \n" +
+            "//APCEREP  DD SYSOUT=*                                 \n" +                                                
+            "//APCIN    DD *                                        \n" +
+            "INFILE(SYSUT1),                                        \n" +
+            "SUBSYSTEM=B                                            \n" +
+            "MODE=L                                                 \n" +
+            "TEXT=N                                                 \n" +            
+            "JOBNAME=________                                       \n" +
+            "TX-NAME=_________                                      \n" +
+            "SYSNAME=_________                                      \n" +                      
+            "PGMNAME=_________                                      \n" +
+            "STATE=PEND                                             \n" +
+            "CREATION-DATE=2019-10-08                               \n" +
             "/*                                                    ";
 
         Jcl = Jcl.replace(pmajob, jobname);
