@@ -56,12 +56,6 @@ export default class GetalertbyjobHandler extends ZosmfBaseHandler {
         const options: IDownloadOptions = {};
         params.response.progress.startBar({ task: status });
 
-        // Determine the positional parameter specified and invoke the correct API
-        // TODO: More will be added with additional commands   if (this.mArguments.dataset) {
-        //    sourceType = "dataset";
-        // let sourceType: string;
-        // if (params.definition.name === "jobname") {
-
 
         // let response: IJob; // Response from Submit Job
         let apiObj: any;    // API Object to set in the command JSON response

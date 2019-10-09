@@ -25,8 +25,8 @@ export const GetalertDefinition: ICommandDefinition = {
     },
     examples: [
         {
-            description: "measure job with job name TESTPMA8.",
-            options: "TESTPMA8",
+            description: "To see if any job violated statistical norm from performance point of view today.",
+            options: "",
         },
     ],
 };

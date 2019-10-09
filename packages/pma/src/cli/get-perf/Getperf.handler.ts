@@ -21,6 +21,7 @@ import { Get } from "../../../../zosfiles/src/api/methods/get/Get";
 import { ZosmfBaseHandler } from "../../../../zosmf/src/ZosmfBaseHandler";
 // import { localfile } from "../../pma-util/";
 import getstdin = require("get-stdin");
+import { DataSet } from "../../../../workflows/src/cli/create/dataset/Dataset.definition";
 
 /**
  * "zos-jobs submit data-set" command handler. Submits a job (JCL) contained within a z/OS data set (PS or PDS member).
@@ -56,56 +57,31 @@ export default class GetperfHandler extends ZosmfBaseHandler {
         const options: IDownloadOptions = {};
         params.response.progress.startBar({ task: status });
 
-        // Determine the positional parameter specified and invoke the correct API
-        // TODO: More will be added with additional commands   if (this.mArguments.dataset) {
-        //    sourceType = "dataset";
-        // let sourceType: string;
-        // if (params.definition.name === "jobname") {
-
-
-        // let response: IJob; // Response from Submit Job
         let apiObj: any;    // API Object to set in the command JSON response
         let spoolFilesResponse: ISpoolFile[]; // Response from view all spool content option
         let source: any;    // The actual JCL source (i.e. data-set name, file name, etc.)
-        // let directory: string = this.mArguments.directory;// Path where to download spool content
         this.arguments = params.arguments;
         const pmajob = "pmajob";
-        // let jobname =" ";
-        // Force yargs `jobid` parameter to be a string
         const jobname: string = this.arguments.jobname;
-        // Process d    epending on the source type
-        // Submit the JCL from a local file
-        // case "local-file":
-        //    parms.jclSource = this.mArguments.localFile;
-        //    const JclString = fs.readFileSync(this.mArguments.localFile).toString();
-        //    apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
-        //    source = this.mArguments.localFile;
-        //    if (parms.viewAllSpoolContent) {
-        //        spoolFilesResponse = apiObj;
-        //    }
-        //    break;
-        // Submit the JCL piped in on stdin
-        // case "jobname":
 
-        // pmajob=jobname;
         let Jcl: string =
-            "//PMAANAL  JOB (124400000),'PMA ANALYZER',CLASS=A,   \n" +
-            "//       MSGCLASS=P,MSGLEVEL=(1,1),NOTIFY=&SYSUID     \n" +
-            "//PRINT   EXEC PGM=CAWABATC,REGION=2M                 \n" +
-            "//STEPLIB   DD DSN=AD1QA.FMMVS90.CAILIB,              \n" +
-            "//             DISP=SHR                               \n" +
-            "//SYSPRINT  DD SYSOUT=*                               \n" +
-            "//SYSLIST   DD SYSOUT=A                               \n" +
-            "//SYSUDUMP  DD SYSOUT=*                               \n" +
-            "//SYSUT1    DD DSN=BHAMA09.QATT.MAT12PMA.KSDSALT,     \n" +
-            "//             DISP=SHR                               \n" +
-            "//SYSIN     DD *                                      \n" +
-            "PRINT,                                                \n" +
-            "INFILE(SYSUT1),                                       \n" +
-            "FORMAT(C),                                            \n" +
-            "LAYOUTFILE(BHAMA09.PMA90.CNTL(KSDSALT)),              \n" +
-            "SELRECIF(2,EQ,C'pmajob')                              \n" +
-            "/*                                                    ";
+            "//PMAANAL  JOB (124400000),'PMA ANALYZER',CLASS=A,     \n" +
+            "//       MSGCLASS=P,MSGLEVEL=(1,1),NOTIFY=&SYSUID      \n" +
+            "//APCDIC1  EXEC PGM=IDCAMS,REGION=1M                   \n" +
+            "//KSDSINP  DD DSN=APM.QATT.MAT12PMA.KSDSJOB,DISP=SHR   \n" +
+            "//KSDSOUT  DD DSN=&&KSDSOUT,DISP=(NEW,CATLG,DELETE),   \n" +
+            "//            LRECL=8189,BLKSIZE=8193,RECFM=VB,        \n" +
+            "//            SPACE=(CYL,(50,50),RLSE)                 \n" +
+            "//SYSPRINT DD  SYSOUT=*                                \n" +
+            "//SYSIN    DD  *                                       \n" +
+            " REPRO INFILE  (KSDSINP) -                             \n" +
+            "      OUTFILE (KSDSOUT)                                \n" +
+            "//APCBABOT EXEC PGM=PMAREAD,PARM='pmajob  '            \n" +
+            "//STEPLIB  DD DISP=SHR,DSN=APM.QATT.TEST.ASM.LOAD      \n" +
+            "//KSDSJOB DD  DISP=(SHR,DELETE,DELETE),DSN=&&KSDSOUT   \n" +
+            "//KSDSOUT   DD  SYSOUT=*                               \n" +
+            "//*                                                      ";
+
 
         Jcl = Jcl.replace(pmajob, jobname);
         parms.viewAllSpoolContent = true;
@@ -130,7 +106,7 @@ export default class GetperfHandler extends ZosmfBaseHandler {
             // Print data from spool content
         } else {
             for (const spoolFile of spoolFilesResponse) {
-                if (spoolFile.ddName === "SYSLIST") {
+                if (spoolFile.ddName === "KSDSOUT") {
                     if (!isNullOrUndefined(spoolFile.procName) && spoolFile.procName.length > 0) {
                         this.console.log("Spool file: %s (ID #%d, Step: %s, ProcStep: %s)",
                             spoolFile.ddName, spoolFile.id, spoolFile.stepName, spoolFile.procName);
@@ -141,7 +117,6 @@ export default class GetperfHandler extends ZosmfBaseHandler {
                     this.console.log(spoolFile.data);
                 }
             }
-
             // Set the API object to the correct
             this.data.setObj(spoolFilesResponse);
         }

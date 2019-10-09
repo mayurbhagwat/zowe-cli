@@ -56,13 +56,6 @@ export default class GetalertHandler extends ZosmfBaseHandler {
         const options: IDownloadOptions = {};
         params.response.progress.startBar({ task: status });
 
-        // Determine the positional parameter specified and invoke the correct API
-        // TODO: More will be added with additional commands   if (this.mArguments.dataset) {
-        //    sourceType = "dataset";
-        // let sourceType: string;
-        // if (params.definition.name === "jobname") {
-
-
         // let response: IJob; // Response from Submit Job
         let apiObj: any;    // API Object to set in the command JSON response
         let spoolFilesResponse: ISpoolFile[]; // Response from view all spool content option
@@ -79,24 +72,7 @@ export default class GetalertHandler extends ZosmfBaseHandler {
         const mm = String(tod.getMonth() + 1).substring(0,2);
         const yyyy = tod.getFullYear();
         const todaystring: string = yyyy + "-"+ mm + "-" + dd ;
-        // let jobname =" ";
-        // Force yargs `jobid` parameter to be a string
-        // const jobname: string = this.arguments.jobname;
-        // Process d    epending on the source type
-        // Submit the JCL from a local file
-        // case "local-file":
-        //    parms.jclSource = this.mArguments.localFile;
-        //    const JclString = fs.readFileSync(this.mArguments.localFile).toString();
-        //    apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
-        //    source = this.mArguments.localFile;
-        //    if (parms.viewAllSpoolContent) {
-        //        spoolFilesResponse = apiObj;
-        //    }
-        //    break;
-        // Submit the JCL piped in on stdin
-        // case "jobname":
 
-        // pmajob=jobname;
         let Jcl: string =
             "//PMAALRT  JOB (124400000),'PMA ALERT',CLASS=A,        \n" +
             "//       MSGCLASS=P,MSGLEVEL=(1,1),NOTIFY=&SYSUID      \n" +

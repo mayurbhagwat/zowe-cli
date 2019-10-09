@@ -16,7 +16,6 @@ import { ListDefinition } from "./list/List.definition";
 import { CancelDefinition } from "./cancel/Cancel.definition";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { DownloadDefinition } from "./download/Download.definition";
-import { PmautilDefinition } from "./pma-util/pmautil.definition";
 import { ZosmfSession } from "../../../zosmf";
 
 export const definition: ICommandDefinition = {
@@ -32,7 +31,6 @@ export const definition: ICommandDefinition = {
         ListDefinition,
         DeleteDefinition,
         CancelDefinition,
-        PmautilDefinition,
     ],
     passOn: [
         {
