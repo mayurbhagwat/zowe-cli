@@ -63,6 +63,7 @@ export default class GetperfHandler extends ZosmfBaseHandler {
         this.arguments = params.arguments;
         const pmajob = "pmajob";
         const jobname: string = this.arguments.jobname;
+        const jobname1= jobname.toUpperCase();
 
         let Jcl: string =
             "//PMAANAL  JOB (124400000),'PMA ANALYZER',CLASS=A,     \n" +
@@ -83,7 +84,7 @@ export default class GetperfHandler extends ZosmfBaseHandler {
             "//*                                                      ";
 
 
-        Jcl = Jcl.replace(pmajob, jobname);
+        Jcl = Jcl.replace(pmajob, jobname1);
         parms.viewAllSpoolContent = true;
         // const Jcl = await getstdin();
         apiObj = await SubmitJobs.submitJclString(this.mSession, Jcl, parms);
