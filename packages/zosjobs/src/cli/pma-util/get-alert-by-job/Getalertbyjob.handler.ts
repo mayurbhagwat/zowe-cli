@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "./node_modules/@zowe/imperative";
+import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
 import { SubmitJobs } from "../../../api/SubmitJobs";
 import { IJob } from "../../../api/doc/response/IJob";
 import { isNullOrUndefined } from "util";
@@ -20,7 +20,7 @@ import { IDownloadOptions } from "../../../../../zosfiles/src/api/methods/downlo
 import { Get } from "../../../../../zosfiles/src/api/methods/get/Get";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 // import { localfile } from "../../pma-util/";
-import getstdin = require("./node_modules/get-stdin");
+import getstdin = require("get-stdin");
 
 /**
  * "zos-jobs submit data-set" command handler. Submits a job (JCL) contained within a z/OS data set (PS or PDS member).
@@ -28,7 +28,7 @@ import getstdin = require("./node_modules/get-stdin");
  * @class SubmitJobHandler
  * @implements {ICommandHandler}
  */
-export default class GetalertHandler extends ZosmfBaseHandler {
+export default class GetalertbyjobHandler extends ZosmfBaseHandler {
 
     /**
      * Command handler process - invoked by the command processor to handle the "zos-jobs submit data-set"
@@ -68,6 +68,9 @@ export default class GetalertHandler extends ZosmfBaseHandler {
         let spoolFilesResponse: ISpoolFile[]; // Response from view all spool content option
         let source: any;    // The actual JCL source (i.e. data-set name, file name, etc.)
         // let directory: string = this.mArguments.directory;// Path where to download spool content
+        this.arguments = params.arguments;
+        const pmajob = "pmajob";
+        const jobname: string = this.arguments.jobname;
         const today = "today";
         const tod = new Date();
         // var dd = String(today.getDate()).padStart(2, '0');
@@ -114,7 +117,7 @@ export default class GetalertHandler extends ZosmfBaseHandler {
             "SUBSYSTEM=B                                            \n" +
             "MODE=L                                                 \n" +
             "TEXT=N                                                 \n" +            
-            "JOBNAME=________                                       \n" +
+            "JOBNAME=pmajob                                         \n" +
             "TX-NAME=_________                                      \n" +
             "SYSNAME=_________                                      \n" +                      
             "PGMNAME=_________                                      \n" +
@@ -123,6 +126,7 @@ export default class GetalertHandler extends ZosmfBaseHandler {
             "/*                                                    ";
 
         Jcl = Jcl.replace(today, todaystring);
+        Jcl = Jcl.replace(pmajob, jobname);
         parms.viewAllSpoolContent = true;
         // const Jcl = await getstdin();
         apiObj = await SubmitJobs.submitJclString(this.mSession, Jcl, parms);

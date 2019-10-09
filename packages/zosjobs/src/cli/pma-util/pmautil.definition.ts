@@ -20,17 +20,19 @@ import { DownloadDefinition } from "../download/Download.definition";
 import { ZosmfSession } from "../../../../zosmf";
 import { GetperfDefinition } from "./get-perf/Getperf.definition";
 import { GetinexDefinition } from "./get-in-ex/getinex.definition";
-import { GetalertDefinition } from "./get-Alert/Getalert.definition";
+import { GetalertDefinition } from "./get-alert/Getalert.definition";
+import { GetalertbyjobDefinition } from "./get-alert-by-job/Getalertbyjob.definition";
 
 export const PmautilDefinition: ICommandDefinition = {
     name: "pma-util",
     aliases: ["pmau"],
     type: "group",
-    summary: "Manage PMA utilities",
-    description: "Manage PMA utilities.",
+    summary: "Manage Performance Managment Assistant (PMA) utilities",
+    description: "Provides Utilities to access performance data provided by Performance Management Assistant(PMA).",
     children: [
         GetperfDefinition,
         GetinexDefinition,
         GetalertDefinition,
+        GetalertbyjobDefinition,
     ]
 };

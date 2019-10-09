@@ -16,8 +16,8 @@ export const GetinexDefinition: ICommandDefinition = {
     name: "get-in-ex",
     aliases: ["getie"],
     type: "command",
-    summary: "You can include o exclude the jobs from PMA scope",
-    description: "You can include o exclude the jobs from PMA scope",
+    summary: "Include or exclude job(s) from PMA scope",
+    description: "Include or exclude job(s) from PMA scope, only those jobs will be measured ",
     handler: __dirname + "/Getperf.handler",
     profile: {
         optional: ["zosmf"],
@@ -40,7 +40,7 @@ export const GetinexDefinition: ICommandDefinition = {
     ]as ICommandOptionDefinition[]),
     examples: [
         {
-            description: "measure job with job name TESTPMA8.",
+            description: "To include TESTPMA8 in PMA scope.",
             options: "TESTPMA8",
         },
     ],

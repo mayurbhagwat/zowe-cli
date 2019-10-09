@@ -13,16 +13,24 @@
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 // import { JobDefinition } from "./Job/job.definition";
 
-export const GetalertDefinition: ICommandDefinition = {
-    name: "get-alert",
-    aliases: ["geta"],
+export const GetalertbyjobDefinition: ICommandDefinition = {
+    name: "get-alert-by-job",
+    aliases: ["getabj"],
     type: "command",
-    summary: "Get today's performance alert information for all jobs in PMA scope",
-    description: "Check for the alert created today by PMA for those job that over consume one of the performance metrics: CPU, Elapse time, EXCP, SRVU ",
-    handler: __dirname + "/Getalert.handler",
+    summary: "Get today's performance status for the job.",
+    description: "Check if the job has violated statistical norms for performance test. If this returns no record your job is still in good condition for performance metrics. ",
+    handler: __dirname + "/Getalertbyjob.handler",
     profile: {
         optional: ["zosmf"],
     },
+    positionals: [
+        {
+            name: "jobname",
+            description: "The name of the job you are interested or under test (e.g. TESTPMA8).",
+            type: "string",
+            required: true
+        },
+    ],
     options: ([
         {
             name: "view-all-spool-content", aliases: ["vasc"],
@@ -33,8 +41,8 @@ export const GetalertDefinition: ICommandDefinition = {
     ]as ICommandOptionDefinition[]),
     examples: [
         {
-            description: "List all the jobs that over consume resource.",
-            options: "",
+            description: "To see if job TESTPMA8 violated statistical norm from performance point of view.",
+            options: "TESTPMA8",
         },
     ],
 };

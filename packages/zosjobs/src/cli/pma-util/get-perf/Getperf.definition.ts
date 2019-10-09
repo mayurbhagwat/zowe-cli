@@ -17,8 +17,8 @@ export const GetperfDefinition: ICommandDefinition = {
     name: "get-perf",
     aliases: ["getp"],
     type: "command",
-    summary: "get the performance test result information for the provided jobname",
-    description: "Get the performance data for the JOobname using the PMA product.",
+    summary: "Get the performance test result for the jobname",
+    description: "Get the performance data for the Jobname using PMA.",
     handler: __dirname + "/Getperf.handler",
     profile: {
         optional: ["zosmf"],
@@ -26,7 +26,7 @@ export const GetperfDefinition: ICommandDefinition = {
     positionals: [
         {
             name: "jobname",
-            description: "The jobname (e.g. TESTPMA8) of the job. ",
+            description: "The name for the job that is under test (e.g. TESTPMA8) ",
             type: "string",
             required: true
         },
@@ -41,7 +41,7 @@ export const GetperfDefinition: ICommandDefinition = {
     ]as ICommandOptionDefinition[]),
     examples: [
         {
-            description: "measure job with job name TESTPMA8.",
+            description: "To get performance data for job TESTPMA8.",
             options: "TESTPMA8",
         },
     ],
