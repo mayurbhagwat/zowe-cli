@@ -65,6 +65,7 @@ export default class GetalertbyjobHandler extends ZosmfBaseHandler {
         this.arguments = params.arguments;
         const pmajob = "pmajob";
         const jobname: string = this.arguments.jobname;
+        const jobname1= jobname.toUpperCase();
         const today = "today";
         const tod = new Date();
         // var dd = String(today.getDate()).padStart(2, '0');
@@ -98,7 +99,7 @@ export default class GetalertbyjobHandler extends ZosmfBaseHandler {
             "/*                                                    ";
 
         Jcl = Jcl.replace(today, todaystring);
-        Jcl = Jcl.replace(pmajob, jobname);
+        Jcl = Jcl.replace(pmajob, jobname1);
         parms.viewAllSpoolContent = true;
         // const Jcl = await getstdin();
         apiObj = await SubmitJobs.submitJclString(this.mSession, Jcl, parms);

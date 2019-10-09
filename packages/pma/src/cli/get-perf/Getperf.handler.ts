@@ -105,6 +105,8 @@ export default class GetperfHandler extends ZosmfBaseHandler {
 
             // Print data from spool content
         } else {
+
+            let out = "error";
             for (const spoolFile of spoolFilesResponse) {
                 if (spoolFile.ddName === "KSDSOUT") {
                     if (!isNullOrUndefined(spoolFile.procName) && spoolFile.procName.length > 0) {
@@ -114,8 +116,12 @@ export default class GetperfHandler extends ZosmfBaseHandler {
                         this.console.log("Spool file: %s (ID #%d, Step: %s)",
                             spoolFile.ddName, spoolFile.id, spoolFile.stepName);
                     }
+                    out = "pass";
                     this.console.log(spoolFile.data);
                 }
+            }
+            if (out === "error"){
+                this.console.log("Given job is not in PMA scope");
             }
             // Set the API object to the correct
             this.data.setObj(spoolFilesResponse);
