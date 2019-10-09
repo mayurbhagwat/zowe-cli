@@ -74,36 +74,14 @@ export default class GetalertbyjobHandler extends ZosmfBaseHandler {
         const today = "today";
         const tod = new Date();
         // var dd = String(today.getDate()).padStart(2, '0');
-        var dd = String(tod.getDate()).substring(0,2);
-        
+        let dd = String(tod.getDate()).substring(0,2);
         if (dd.length === 1 ){
             dd = "0" + dd;
-        }else{
-            dd="0"
         }
+        const mm = String(tod.getMonth() + 1).substring(0,2);
+        const yyyy = tod.getFullYear();
+        const todaystring: string = yyyy + "-"+ mm + "-" + dd;
 
-        // var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        const mm = String(tod.getMonth() + 1).substring(0,2) //January is 0!
-        const yyyy = tod.getFullYear(); 
-        const todaystring: string = yyyy + '-'+ mm + '-' + dd ;
-        // let jobname =" ";
-        // Force yargs `jobid` parameter to be a string
-        // const jobname: string = this.arguments.jobname;
-        // Process d    epending on the source type
-        // Submit the JCL from a local file
-        // case "local-file":
-        //    parms.jclSource = this.mArguments.localFile;
-        //    const JclString = fs.readFileSync(this.mArguments.localFile).toString();
-        //    apiObj = await SubmitJobs.submitJclString(this.mSession, JclString, parms);
-        //    source = this.mArguments.localFile;
-        //    if (parms.viewAllSpoolContent) {
-        //        spoolFilesResponse = apiObj;
-        //    }
-        //    break;
-        // Submit the JCL piped in on stdin
-        // case "jobname":
-
-        // pmajob=jobname;
         let Jcl: string =
             "//PMAALRT  JOB (124400000),'PMA ALERT',CLASS=A,        \n" +
             "//       MSGCLASS=P,MSGLEVEL=(1,1),NOTIFY=&SYSUID      \n" +
@@ -111,15 +89,15 @@ export default class GetalertbyjobHandler extends ZosmfBaseHandler {
             "//STEPLIB  DD DISP=SHR,DSN=APM.QATT.CADEMO.CEETLOAD    \n" +
             "//APCBALT1 DD DISP=SHR,DSN=APM.QATT.MAT12PMA.KSDSALT   \n" +
             "//APCTAB   DD SYSOUT=*                                 \n" +
-            "//APCEREP  DD SYSOUT=*                                 \n" +                                                
+            "//APCEREP  DD SYSOUT=*                                 \n" +
             "//APCIN    DD *                                        \n" +
             "INFILE(SYSUT1),                                        \n" +
             "SUBSYSTEM=B                                            \n" +
             "MODE=L                                                 \n" +
-            "TEXT=N                                                 \n" +            
+            "TEXT=N                                                 \n" +
             "JOBNAME=pmajob                                         \n" +
             "TX-NAME=_________                                      \n" +
-            "SYSNAME=_________                                      \n" +                      
+            "SYSNAME=_________                                      \n" +
             "PGMNAME=_________                                      \n" +
             "STATE=PEND                                             \n" +
             "CREATION-DATE=today                                    \n" +

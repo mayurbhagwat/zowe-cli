@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "./node_modules/@zowe/imperative";
+import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
 import { SubmitJobs } from "../../../api/SubmitJobs";
 import { IJob } from "../../../api/doc/response/IJob";
 import { isNullOrUndefined } from "util";
@@ -20,7 +20,7 @@ import { IDownloadOptions } from "../../../../../zosfiles/src/api/methods/downlo
 import { Get } from "../../../../../zosfiles/src/api/methods/get/Get";
 import { ZosmfBaseHandler } from "../../../../../zosmf/src/ZosmfBaseHandler";
 // import { localfile } from "../../pma-util/";
-import getstdin = require("./node_modules/get-stdin");
+import getstdin = require("get-stdin");
 
 /**
  * "zos-jobs submit data-set" command handler. Submits a job (JCL) contained within a z/OS data set (PS or PDS member).
@@ -71,18 +71,14 @@ export default class GetalertHandler extends ZosmfBaseHandler {
         const today = "today";
         const tod = new Date();
         // var dd = String(today.getDate()).padStart(2, '0');
-        var dd = String(tod.getDate()).substring(0,2);
-        
+        let dd = String(tod.getDate()).substring(0,2);
         if (dd.length === 1 ){
             dd = "0" + dd;
-        }else{
-            dd="0"
         }
 
-        // var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-        const mm = String(tod.getMonth() + 1).substring(0,2) //January is 0!
-        const yyyy = tod.getFullYear(); 
-        const todaystring: string = yyyy + '-'+ mm + '-' + dd ;
+        const mm = String(tod.getMonth() + 1).substring(0,2);
+        const yyyy = tod.getFullYear();
+        const todaystring: string = yyyy + "-"+ mm + "-" + dd ;
         // let jobname =" ";
         // Force yargs `jobid` parameter to be a string
         // const jobname: string = this.arguments.jobname;
@@ -108,15 +104,15 @@ export default class GetalertHandler extends ZosmfBaseHandler {
             "//STEPLIB  DD DISP=SHR,DSN=APM.QATT.CADEMO.CEETLOAD    \n" +
             "//APCBALT1 DD DISP=SHR,DSN=APM.QATT.MAT12PMA.KSDSALT   \n" +
             "//APCTAB   DD SYSOUT=*                                 \n" +
-            "//APCEREP  DD SYSOUT=*                                 \n" +                                                
+            "//APCEREP  DD SYSOUT=*                                 \n" +
             "//APCIN    DD *                                        \n" +
             "INFILE(SYSUT1),                                        \n" +
             "SUBSYSTEM=B                                            \n" +
             "MODE=L                                                 \n" +
-            "TEXT=N                                                 \n" +            
+            "TEXT=N                                                 \n" +
             "JOBNAME=________                                       \n" +
             "TX-NAME=_________                                      \n" +
-            "SYSNAME=_________                                      \n" +                      
+            "SYSNAME=_________                                      \n" +
             "PGMNAME=_________                                      \n" +
             "STATE=PEND                                             \n" +
             "CREATION-DATE=today                                    \n" +

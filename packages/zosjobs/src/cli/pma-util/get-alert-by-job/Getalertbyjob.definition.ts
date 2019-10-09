@@ -18,7 +18,8 @@ export const GetalertbyjobDefinition: ICommandDefinition = {
     aliases: ["getabj"],
     type: "command",
     summary: "Get today's performance status for the job.",
-    description: "Check if the job has violated statistical norms for performance test. If this returns no record your job is still in good condition for performance metrics. ",
+    description: "Check if the job has violated statistical norms for performance test."+
+        " If this returns no record your job is still in good condition for performance metrics.",
     handler: __dirname + "/Getalertbyjob.handler",
     profile: {
         optional: ["zosmf"],
